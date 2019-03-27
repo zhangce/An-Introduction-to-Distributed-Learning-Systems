@@ -1,0 +1,117 @@
+Define the objective
+\begin{align}
+\min_{\x}:\quad \left\{f({\x}):={1\over N}\sum_{n=1}^N f_n(\x) \right\}
+\label{eq:dsgd_obj}
+\end{align}
+where $f_n({\x}):= \E_{\xi\sim \mathcal{D}_n} F_n(\x; \xi)$.
+
+Define 
+\begin{align}
+\X_{t} := \left[\begin{matrix}
+\(\x^{(1)}_t\)^\top \\
+\(\x^{(2)}_t\)^\top \\
+\cdots \\
+\(\x^{(N)}_t\)^\top
+\end{matrix}
+\right]
+\end{align} 
+where $\x_t^{(n)}$ denotes the local model on node $n$ at time $t$. Denote by 
+\begin{align}
+f'\(\X_t\) := \left[\begin{matrix}
+\left(f'_1\(\x^{(1)}_t\)\right)^\top \\
+\left(f'_2\(\x^{(2)}_t\)\right)^\top \\
+\cdots \\
+\left(f'_N\(\x^{(N)}_t\)\right)^\top 
+\end{matrix}
+\right]
+\end{align} 
+
+\begin{align}
+\G\(\X_t; \{\xi_t^{(n)}\}_{n=1}^N\) := \left[\begin{matrix}
+\left(F'_1\(\x^{(1)}_t; \xi_t^{(1)}\)\right)^\top \\
+\left(F'_2\(\x^{(2)}_t; \xi_t^{(2)}\)\right)^\top \\
+\cdots \\
+\left(F'_N\(\x^{(N)}_t; \xi_t^{(N)}\)\right)^\top 
+\end{matrix}
+\right]
+\end{align} 
+
+Then we can see that 
+\begin{align}
+\E\left[\G_{t}\(\X_t; \{\xi_t^{(n)}\}_{n=1}^N\) \right] = Nf'_{t}\(\X_t\).
+\end{align}
+
+The decentralized algorithm is
+\begin{align}
+\X_{t+1} = W\X_t - \gamma \G_{t}\(\X_t; \{\xi_t^{(n)}\}_{n=1}^N\)
+\end{align}
+
+\begin{align}
+\X_{t+1} = \X_t - \gamma \(\G_{t}\(\X_t; \{\xi_t^{(n)}\}_{n=1}^N\) + {1\over \gamma}(I-W)\X_t \)
+\end{align}
+It actually solves the following objective
+\begin{align}
+\min_{\X}:\quad \left\{\tilde{f}(\X) := %{1\over N}
+\sum_{n=1}^N f_n\(\x^{(n)}\) + {1\over 2\gamma}\|\X\|^2_{I-W}\right\}
+\end{align}
+where we have
+\begin{align}
+\X := \left[\begin{matrix}
+\(\x^{(1)}\)^\top \\
+\(\x^{(2)}\)^\top \\
+\cdots \\
+\(\x^{(N)}\)^\top
+\end{matrix}
+\right].
+\end{align} 
+
+\begin{tcolorbox}[colback=pink!5!white,colframe=black!75!black]
+\begin{assumption} \label{ass:dsgd}
+%=======
+%An clear advantage of $\SGD$ is that the computational complexity reduces to $O(d)$ per iteration. It is worth pointing out that the $\SGD$ algorithm is NOT a descent algorithm due to the randomness.
+%
+%The next question is whether it converges and how fast if yes. We first make some typical assumption
+%\begin{tcolorbox}[colback=pink!5!white,colframe=black!75!black]
+%\begin{assumption}
+%>>>>>>> b94b8679f310fa566039184f25fe4da4b1ce56ff
+We make the following assumption:
+\begin{itemize}
+\item ({\bf Bounded inner variance})
+\item ({\bf Bounded outer variance})
+\end{itemize}
+\end{assumption}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!black]
+\begin{theorem} \label{thm:dsgd_1}
+Under Assumptions~\ref{ass:gd} and \ref{ass:sgd}, the $\SGD$ method admits the following convergence rate
+\begin{align}
+{1\over T}\sum_{t=1}^T\E\left[\left\|\tilde{f}'(\X_t) + {1\over \gamma} (I-W)\X_t \right\|^2\right] \lesssim %{(f(\x_1) - f^\star)L \over T} + {(f(\x_1) - f^\star)\sqrt{L}\sigma \over \sqrt{T}}. 
+\end{align}
+by choosing the learning rate $\gamma = {1\over L+\sigma \sqrt{TL}}$.
+\end{theorem}
+\end{tcolorbox}
+
+
+The key is to analyze 
+\begin{align*}
+\left\|f'(\X_t) + {1\over \gamma}(I-W)\X_t\right\|^2_F = 
+\end{align*}
+from 
+\[
+{1\over N}\|A\|^2_F = {1\over N} \left\|A - {\1\1^\top\over N}A\right\|^2_F + \left\|{1\over N} \1^\top A\right\|^2
+\]
+
+From the property of 
+\begin{align*}
+\|\b + \a\|^2 = & \|\a\|^2 + \|\b\|^2 + 2\langle \a, \b\rangle 
+\\ \geq & 
+\|\a\|^2 + \|\b\|^2- {1\over 2}\|\a\|^2 - 8\|\b\|^2
+\\ = &
+{1\over 2}\|\a\|^2 - 7\|\b\|^2
+\end{align*}
+
+
+
+
+

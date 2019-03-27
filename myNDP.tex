@@ -1,0 +1,117 @@
+%\usepackage[utf8]{inputenc} % allow utf-8 input
+%\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{color}
+\usepackage{fullpage}
+
+\def\rc{\color{red}}
+\def\bc{\color{blue}}
+
+\usepackage{tikz,lipsum,lmodern}
+\usepackage[most]{tcolorbox}
+
+\def\bBoxBass{\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!black] \begin{assumption}}
+\def\bBoxEass{\end{assumption}\end{tcolorbox}}
+
+\DeclareMathOperator*{\Argmax}{Argmax}
+\DeclareMathOperator*{\Argmin}{Argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\def\1{{\bf 1}}
+\def\0{{\bf 0}}
+\renewcommand{\a}{{\bf a}}
+\renewcommand{\b}{{\bf b}}
+\renewcommand{\c}{{\bf c}}
+\renewcommand{\d}{{\rm d}}  % for derivatives
+\newcommand{\e}{{\bf e}}
+\newcommand{\f}{{\bf f}}
+\newcommand{\g}{{\bf g}}
+\newcommand{\h}{{\bf h}}
+\newcommand{\bi}{{\bf i}}
+\newcommand{\bj}{{\bf j}}
+\newcommand{\bK}{{\bf K}}
+%\newcommand{\k}{{\bf k}}
+% in Latex2e this must be renewcommand
+\renewcommand{\k}{{\bf k}}
+\newcommand{\m}{{\bf m}}
+\newcommand{\mhat}{{\overline{m}}}
+\newcommand{\tm}{{\tilde{m}}}
+\newcommand{\n}{{\bf n}}
+\renewcommand{\o}{{\bf o}}
+\newcommand{\p}{{\bf p}}
+\newcommand{\q}{{\bf q}}
+\renewcommand{\r}{{\bf r}}
+\newcommand{\s}{{\bf s}}
+\renewcommand{\t}{{\bf t}}
+\renewcommand{\u}{{\bf u}}
+\renewcommand{\v}{{\bf v}}
+\newcommand{\w}{{\bf w}}
+\newcommand{\x}{{\bf x}}
+\def\X{{\bf X}}
+\newcommand{\y}{{\bf y}}
+\newcommand{\z}{{\bf z}}
+\newcommand{\bl}{{\bf l}}
+\newcommand{\A}{{\bf A}}
+\newcommand{\B}{{\bf B}}
+\newcommand{\C}{{\bf C}}
+\newcommand{\D}{{\bf D}}
+\newcommand{\Dcal}{\mathcal{D}}
+%\newcommand{\E}{{\bf E}}
+\newcommand{\F}{{\bf F}}
+\newcommand{\G}{{\bf G}}
+\newcommand{\Gcal}{{\mathcal{G}}}
+\renewcommand{\H}{{\bf H}}
+\newcommand{\I}{{\bf I}}
+\newcommand{\J}{{\bf J}}
+\newcommand{\K}{{\bf K}}
+\renewcommand{\L}{{\bf L}}
+%\newcommand{\Lcal}{{\mathcal{L}}}
+\newcommand{\M}{{\bf M}}
+\newcommand{\Mcal}{{\mathcal{M}}}
+\newcommand{\N}{\mathcal{N}}  % for normal density
+%\newcommand{\N}{{\bf N}}
+\newcommand{\bupeta}{\boldsymbol{\upeta}}
+\renewcommand{\O}{{\bf O}}
+\renewcommand{\P}{{\bf P}}
+\newcommand{\Q}{{\bf Q}}
+\newcommand{\R}{{\bf R}}
+\renewcommand{\S}{{\bf S}}
+\newcommand{\Scal}{{\mathcal{S}}}
+\newcommand{\T}{{\bf T}}
+\newcommand{\Tcal}{{\mathcal{T}}}
+\newcommand{\U}{{\bf U}}
+\newcommand{\Ucal}{{\mathcal{U}}}
+\newcommand{\tU}{{\tilde{\U}}}
+\newcommand{\tUcal}{{\tilde{\Ucal}}}
+\newcommand{\V}{{\bf V}}
+\newcommand{\W}{{\bf W}}
+
+\def\dd{\rm D}
+
+\def\E{\mathbb{E}}
+
+\def\({\left(}
+\def\){\right)}
+\def\1{{\bf 1}}
+
+\def\Ocal{\mathcal{O}}
+
+%% theorem format %%
+\newcounter{ass_counter}
+\newcounter{thm_counter}
+\newcounter{remark_counter}
+%\newtheorem{theorem}[thm_counter]{Theorem}%[section]
+% \newtheorem{lemma}[thm_counter]{Lemma}%[Lemma]
+% \newtheorem{corollary}[thm_counter]{Corollary}
+\newtheorem{assumption}[ass_counter]{Assumption}
+% \newtheorem{remark}[remark_counter]{Remark}
+% \newtheorem{proposition}[thm_counter]{Proposition}
+
+%% display %%
+\allowdisplaybreaks
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+

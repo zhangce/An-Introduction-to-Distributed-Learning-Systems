@@ -1,0 +1,140 @@
+\documentclass[examplefnt,biber]{nowfnt} 
+
+\usepackage[utf8]{inputenc}
+
+\def\GD{\texttt{GD}}
+\def\SGD{\texttt{SGD}}
+
+\input{myNDP}
+
+\title{Distributed Learning with
+First-order Methods: An Overly Simplified  Introduction}
+
+\subtitle{Systems and Theory}
+
+\maintitleauthorlist{
+Ji Liu \\
+XXX \\
+email \\
+\and
+Ce Zhang \\
+ETH Zurich \\
+ce.zhang@inf.ethz.ch
+}
+
+\issuesetup
+{%
+ copyrightowner={A.~Heezemans and M.~Casey},
+ volume        = xx,
+ issue         = xx,
+ pubyear       = 2018,
+ isbn          = xxx-x-xxxxx-xxx-x,
+ eisbn         = xxx-x-xxxxx-xxx-x,
+ doi           = 10.1561/XXXXXXXXX,
+ firstpage     = 1, %Explain
+ lastpage      = 18
+ }
+
+\addbibresource{sample-now.bib}
+
+\usepackage{mwe}
+
+%AUTHORS FOR ABSTRACT PAGE
+\author[1]{Liu,Ji}
+\author[2]{Zhang,Ce}
+
+\affil[1]{XXX;email}
+\affil[2]{ETH Zurich; ce.zhang@inf.ethz.ch}
+
+\articledatabox{\nowfntstandardcitation}
+
+\begin{document}
+
+\makeabstracttitle
+
+\begin{abstract}
+Scalable and efficient distributed learning
+is one of the main driving forces behind
+the recent rapid advancement of machine learning and artificial intelligence. One prominent feature of this
+topic is that recent progresses have been
+made by researchers in {\em two} communities:
+(1) {\em the system community} such as database,
+data management, and distributed systems, and
+(2) {\em the machine learning and
+mathematical optimization community}. 
+The interaction and knowledge sharing
+between these two communities lead to the
+rapid development of new distributed learning
+systems and theory.
+
+In this paper, we hope to provide a 
+brief introduction of some distributed
+learning techniques that have recently
+been developed. One special focus on this
+work is to make sure that this paper can
+be easily understood by researchers
+in {\em both} communities --- On the system
+side, we rely on a simplified system model,
+which hides many system details that might
+not be necessary for the reader to understand
+the intuition behind the system speedups;
+On the theory side, we rely on minimal 
+assumptions and significantly 
+simplified the proof of some recent work
+to achieve comparable result. 
+\end{abstract}
+
+\chapter{Introduction}
+
+\section{Machine Learning and
+Optimization}
+
+\section{Gradient Descent 
+and Stochastic Gradient Descent}
+\input{gradient-descent}
+
+\section{An Overly Simplified Distributed Communication Model}
+
+\label{sec:commmodel}
+
+\input{chapters/Chpt1.3.machine.model.tex}
+
+\chapter{Single Thread System}
+
+\section{General Theoretical Framework}
+
+\section{Stochastic Gradient
+Descent}
+
+\section{Low Precision Computation}
+
+\section{Low Precision Data}
+
+\section{System Implications}
+
+\chapter{Distributed/Parallel System}
+
+\section{General Theoretical Framework}
+
+\section{Low Precision 
+Communications}
+
+\section{Asynchronous Communications}
+\input{AsySGD}
+
+\subsection{Local SGD}
+
+\section{Decentralized Communications}
+\input{DSGD}
+
+\section{Decentralized, Low Precision, Asynchronous Communications}
+
+\section{System Implications}
+
+\chapter{Other Results and Open Directions}
+
+
+\backmatter  
+\printbibliography
+
+\end{document}

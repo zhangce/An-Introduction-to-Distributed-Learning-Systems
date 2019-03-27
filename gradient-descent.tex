@@ -1,0 +1,183 @@
+Objective
+\begin{align}
+\min_{\x \in \mathbb{R}^d}\quad \left\{f(\x):=\sum_{m=1}^M F_m(\x)\right\}
+\label{eq:obj-gd}
+\end{align}
+
+Let $f^\star := {1\over M}\min_{\x} f(\x)$.
+
+The gradient descent ($\GD$) can be described below
+\begin{align}
+(\GD)\quad\x_{t+1} = \x_t - \gamma f'(\x_t)
+\label{eq:gd}
+\end{align}
+where $t$ is the iteration index.
+{\rc TODO two intuitions about the gradient descent algorithms.}
+
+To compute the gradient of $f'(\x):={1\over M} F'_m(\x)$, the typical computational complexity is $O(Md)$ where $M$ is the number of samples and $d$ the dimension of the model $\x$. 
+The typical computational complexity to compute the gradient is $O(Md)$. To see the reason, let us imagine the naive linear regression with $F_m:= {1\over 2}(\a_m^\top \x -b)^2$ and the gradient $f'(\x):={1\over M}\sum\a_m(\a_m^\top \x - b)$.
+
+\begin{tcolorbox}[colback=pink!5!white,colframe=black!75!black]
+\begin{assumption} \label{ass:gd}
+We make assumptions in the following:
+\begin{itemize}
+\item ({\bf Lipschitz gradient}) The objective function is assume to have Lipschitz gradient, that is, there exists a constant $L$ satisfying
+\begin{align*}
+f(\y) - f(\x) \leq \langle f'(\x), \y-\x \rangle + {L\over 2} \|\y - \x\|^2 \quad \forall \x, \forall\y
+\end{align*}
+\item ({\bf Smoothness}) All functions $F_m(\cdot)$'s are smooth.
+\end{itemize}
+%\item ({\bf Bounded $f(\x)$ from below})
+\end{assumption}
+\end{tcolorbox}
+The smoothness assumption on $F_m(\cdot)$'s implies that the overall objective function $f(\cdot)$ is smooth too.
+
+{\rc TODO Intuition of assumptions}
+
+We apply the Lipschitz gradient assumption and obtain the following golden inequality immediately
+\begin{align*}
+f(\x_{t+1}) - f(\x_{t}) \leq & \langle f'(\x_{t}), \x_{t+1} - \x_t  \rangle + {L\over 2}\|\x_{t+1} - \x_t\|^2
+\\ = &
+- \gamma \| f'(\x_t) \|^2 + {\gamma^2 L \over 2} \|f'(\x_t)\|^2
+\\ = &
+-\gamma\left(1- {\gamma L\over 2}\right) \|f'(\x_t)\|^2
+\numberthis
+\label{eq:gd_proof_1}
+\end{align*}
+We can see that as long as the learning rate $\gamma$ is small enough such that $1-{\gamma L}/2 > 0$, $f(\x_{t+1})$ can improve $f(\x_t)$. Therefore, the learning cannot be too large to guarantee the progress in each step. However, it is also a bad idea if the learning rate is over small, since the progress is proportional to $\gamma (1-\gamma L /2)$. The optimal learning rate can be obtained by simply maximizing 
+\[
+\gamma (1-\gamma L /2)
+\]
+over $\gamma$, which gives the optimal learning rate for gradient descent method $\gamma^{\star} = 1/L$. Substituting $\gamma = \gamma^\star$ into \eqref{eq:gd_proof_1} yields
+\begin{align*}
+f(\x_{t+1}) - f(\x_t) \leq -{1 \over 2L} \|f'(\x_t)\|^2
+\end{align*}
+or equivalently 
+\begin{align}
+f(\x_{t}) - f(\x_{t+1}) \geq {1 \over 2L} \|f'(\x_t)\|^2.
+\label{eq:gd_proof_2}
+\end{align}
+% Acute readers may ask how do I know the value of the Lipschitz constant $L$. Unfortunately, it is usually unknown. However, in most practical scenarios, it is not hard to find an upper for $L$.
+
+Summarizing Eq.~\eqref{eq:gd_proof_2} over $t$ from $t=1$ to $t=T$ yields
+\begin{align*}
+{1\over 2L} \sum_{t=1}^T \|f'(\x_t)\|^2 \leq & \sum_{t=1}^T\left(f(\x_{t}) - f(\x_{t+1})\right)  
+\\ = &
+f(\x_1) - f(\x_{t+1})
+\\ \leq &
+f(\x_1) - f^\star.
+\end{align*}
+Rearranging the inequality yields the following convergence rate for gradient descent
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!black]
+\begin{theorem}
+Under Assumption~\ref{ass:gd}, the gradient descent method admits the following convergence rate
+\begin{align}
+{1\over T}\sum_{t=1}^T\|f'(\x_t)\|^2 \lesssim {L \over T}(f(\x_1) - f^{\star})
+\end{align}
+by choosing the learning rate $\gamma = {1\over L}$.
+\end{theorem}
+\end{tcolorbox}
+This result indicates that the averaged gradient norm converges in the rate of $1/T$.
+
+There are two major disadvantages for the $\GD$ method:
+\begin{itemize}
+\item The computational complexity and system overhead are too high in each iteration to compute a single gradient;
+\item For nonconvex objectives, the gradient descent often stick on bad (shallow) local optimum.
+\end{itemize}
+
+To overcome these issues, the stochastic gradient method $\SGD$ is widely used in machine learning training. Instead of computing a full gradient in each iteration, people only compute the gradient on a (or a few number of) sampled data. In particular, people randomly sample an $m\in [M]$ independently each time and update the model by
+\begin{align}
+(\SGD)\quad \x_{t+1} = \x_t - \gamma F'_{m_t}(\x_t)
+\label{eq:sgd}
+\end{align}
+where $m_t$ denotes the index randomly selected at the $t$th iteration. $F'_{m_t}(\x_t)$ is called stochastic gradient. We use $g(\x)$ (or $g_t(\x)$) denote the stochastic gradient (or at the $t$th iteration) for short. An important property for stochastic gradient is that its expectation is equal to the true gradient, that is,
+\begin{align}
+\E[g(\x)] = \E_{m} [F'_{m}(\x)] = f'(\x) \quad \forall \x.
+\end{align}
+%<<<<<<< HEAD
+An immediate advantage of $\SGD$ is that the computational complexity reduces to $O(d)$ per iteration. It is worth pointing out that the $\SGD$ algorithm is NOT a descent algorithm due to the randomness.
+
+The next question is whether it converges and how fast if yes. We first make some typical assumption
+\begin{tcolorbox}[colback=pink!5!white,colframe=black!75!black]
+\begin{assumption} \label{ass:sgd}
+%=======
+%An clear advantage of $\SGD$ is that the computational complexity reduces to $O(d)$ per iteration. It is worth pointing out that the $\SGD$ algorithm is NOT a descent algorithm due to the randomness.
+%
+%The next question is whether it converges and how fast if yes. We first make some typical assumption
+%\begin{tcolorbox}[colback=pink!5!white,colframe=black!75!black]
+%\begin{assumption}
+%>>>>>>> b94b8679f310fa566039184f25fe4da4b1ce56ff
+We make the following assumption:
+\begin{itemize}
+\item ({\bf Bounded stochastic variance}) The stochastic gradient is with bounded variance, that is, there exists a constant $\sigma$ satisfying
+\[
+\E[\|g(\x) - f'(\x)\|^2] \leq \sigma^2\quad \forall \x
+\]
+\end{itemize}
+\end{assumption}
+\end{tcolorbox}
+
+\begin{align*}
+f(\x_{t+1}) - f(\x_{t}) \leq & \langle f'(\x_{t}), \x_{t+1} - \x_t  \rangle + {L\over 2}\|\x_{t+1} - \x_t\|^2
+\\ = &
+-\gamma \langle f'(\x_t), g_t(\x_t) \rangle + {L\gamma^2\over 2} \|g_t(\x_t)\|^2. \numberthis 
+\label{eq:sgd_proof_1}
+\end{align*}
+Note two important properties
+\begin{itemize}
+\item $\E[\langle f'(\x_t), g_t(\x_t) \rangle] = \langle f'(\x_t), \E[g_t(\x_t)] \rangle =  \|f'(\x_t)\|^2$
+\item $\E[\|g_t(\x_t)\|^2] = \|f'(\x_t)\|^2 + \E[\|g_{t}(\x_t) - f'(\x_t)\|^2] \leq \|f'(\x_t)\|^2 + \sigma^2$,
+\end{itemize}
+where the second property uses the property of variance, that is, any random variable vector $\xi$ satisfies 
+\begin{align}
+\E[\|\xi\|^2] = \|\E[\xi]\|^2 + \E[\|\xi- \E[\xi]\|]^2.
+\label{eq:mean-var}
+\end{align}
+Apply these two properties to \eqref{eq:sgd_proof_1} and take expectation on both sides:
+\begin{align*}
+& \E[f(\x_{t+1})] - \E[f(\x_t)] 
+\\ \leq & 
+-\gamma \E[\|f'(\x_t)\|^2] + {L\gamma^2 \over 2} \left(\E[\|f'(\x_t)\|^2] + \sigma^2 \right) \numberthis \label{eq:sgd_proof_2}
+\\ \leq &
+-\gamma\left(1 - {\gamma L \over 2}\right)  \E[\|f'(\x_t)\|^2] + {\gamma^2 \over 2} L\sigma^2. \numberthis \label{eq:sgd_proof_2}
+\end{align*}
+From \eqref{eq:sgd_proof_2}, we can see that $\SGD$ does not guarantee ``descent'' in each iteration unlike $\GD$, but it guarantees ``descent'' in the expectation sense in each iteration as long as $\gamma$ is small enough and $\|f'(\x_t)\|^2 > 0$. This is because the first term in \eqref{eq:sgd_proof_2} is in the order of $O(\gamma)$ while the second term is in the order of $O(\gamma^2)$.
+
+Next we summarize \eqref{eq:sgd_proof_2} from $t=1$ to $t=T$ and obtain
+\begin{align}
+\E[f(\x_{T+1})] - f(\x_1) \leq -\gamma\left(1-{\gamma L \over 2} \right)\sum_{t=1}^T\E[\|f'(\x_t)\|^2] + {\gamma^2 \over 2} TL\sigma^2.
+\label{eq:sgd_proof_3}
+\end{align}
+We choose the learning rate $\gamma = {1\over L+ \sigma\sqrt{TL}}$ while implies that $(1-\gamma L/2)> 1/2$. It follows
+%to simply the right hand side of \eqref{eq:sgd_proof_3}
+\begin{align*}
+&{1\over T} \sum_{t=1}^T\E[\|f'(\x_t)\|^2] 
+\\ \lesssim & 
+\frac{f(\x_1)- \E[f(\x_{T+1})]}{T\gamma} + \gamma L\sigma^2
+\\  \lesssim &
+\frac{f(\x_1)- f^\star}{T\gamma} + \gamma L\sigma^2
+\\ \lesssim &
+{(f(\x_1) - f^\star)L \over T} + {(f(\x_1) - f^\star)\sqrt{L}\sigma \over \sqrt{T}}. 
+\end{align*}
+Therefore the convergence rate of $\SGD$ can be summarized into the following theorem
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!black]
+\begin{theorem}
+Under Assumptions~\ref{ass:gd} and \ref{ass:sgd}, the $\SGD$ method admits the following convergence rate
+\begin{align}
+{1\over T}\sum_{t=1}^T\E[\|f'(\x_t)\|^2] \lesssim {(f(\x_1) - f^\star)L \over T} + {(f(\x_1) - f^\star)\sqrt{L}\sigma \over \sqrt{T}}. 
+\end{align}
+by choosing the learning rate $\gamma = {1\over L+\sigma \sqrt{TL}}$.
+\end{theorem}
+\end{tcolorbox}
+{\rc need to fix the learning rate.}
+%=======
+%-\gamma\left(1 - {\gamma L \over 2}\right)  \E[\|f'(\x_t)\|^2] + {L\gamma^2 \over 2} \sigma^2. \numberthis \label{eq:sgd_proof_2}
+%\end{align*}
+%From \eqref{eq:sgd_proof_2}, we can see that $\SGD$ does not guarantee ``descent'' in each iteration unlike $\GD$, but it guarantees ``descent'' in the expectation sense in each iteration as long as $\gamma$ is small enough and $\|f'(\x_t)\|^2 > 0$.
+%
+%
+%
+%>>>>>>> b94b8679f310fa566039184f25fe4da4b1ce56ff
+
+
+ 

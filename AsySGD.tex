@@ -1,0 +1,197 @@
+\begin{align*}
+\x_{t+1} = \x_t - \gamma g_t(\x_{\dd(t)})
+\end{align*}
+
+Important property for $g_t(\x_{\dd(t)})$
+\begin{align}
+\E[g_t(\x_{\dd(t)})] = f'(\x_{\dd(t)})
+\end{align}
+
+\begin{tcolorbox}[colback=pink!5!white,colframe=black!75!black]
+\begin{assumption} \label{ass:asgd}
+%=======
+%An clear advantage of $\SGD$ is that the computational complexity reduces to $O(d)$ per iteration. It is worth pointing out that the $\SGD$ algorithm is NOT a descent algorithm due to the randomness.
+%
+%The next question is whether it converges and how fast if yes. We first make some typical assumption
+%\begin{tcolorbox}[colback=pink!5!white,colframe=black!75!black]
+%\begin{assumption}
+%>>>>>>> b94b8679f310fa566039184f25fe4da4b1ce56ff
+We make the following assumption:
+\begin{itemize}
+\item ({\bf Bounded staleness}) Assume that the staleness is bounded, that is,  
+\[
+0 \leq t - \dd(t) \leq \tau\quad \forall t
+\]
+where $\tau$ is a global parameter.
+\end{itemize}
+\end{assumption}
+\end{tcolorbox}
+
+\begin{align*}
+f(\x_{t+1})- f(\x_t) \leq -\gamma \langle f'(\x_t),  g_t(\x_{\dd(t)})\rangle + {L\gamma^2 \over 2} \|g_t(\x_{\dd(t)})\|^2 
+\end{align*}
+
+Take expectation on both sides
+\begin{align*}
+\E[f(\x_{t+1})]- \E[f(\x_t)] \leq & -\gamma \E[\langle f'(\x_t),  g_t(\x_{\dd(t)})\rangle\ + {L\gamma^2 \over 2} \E[\|g_t(\x_{\dd(t)})\|^2] 
+\numberthis \label{eq:asgd_proof_0}
+%\\ = &
+%\gamma \E[\langle f'(\x_t),  g(\x_{\dd(t)})\rangle] + {L\gamma^2 \over 2} \E[\|g_t{\x_{\dd(t)}}\|^2] 
+% \\ = &
+% \gamma \E[\langle f'(\x_t), f'(\x_{t_{\tau_t}})]
+\end{align*}
+We consider the items on the right hand side respectively. For $\E[\|g_t(\x_{\dd(t)})\|^2]$, we have
+\begin{align*}
+\E_{\dd(t)}[\|g_t(\x_{\dd(t)})\|^2] =&  \E_{\dd(t)}[\|\g_t(\x_{\dd(t)})-f'(\x_{\dd(t)})\|^2] + \|\f_t(\x_{\dd(t)})\|^2
+\\ \leq &
+\sigma^2 + \|\f_t(\x_{\dd(t)})\|^2,
+\numberthis \label{eq:asgd_proof_1}
+\end{align*}
+where the first equality is due to the fact \eqref{eq:mean-var}, and the second one is due to the bounded variance assumption, that is, Assumption~\ref{ass:sgd}.
+
+For $\E[\langle f'(\x_t),  g(\x_{\dd(t)})\rangle]$, we have
+\begin{align*}
+& \E[\langle f'(\x_t),  g(\x_{\dd(t)})\rangle] 
+\\= & 
+\E[\langle f'(\x_t),  \E_{\dd(t)}[g(\x_{\dd(t)})]\rangle]
+\\= & 
+\E[\langle f'(\x_t), f'(\x_{\dd(t)})\rangle]
+\\ = &
+ \E\left[{1\over 2}\|f'(\x_t) - f'(\x_{\dd(t)})\|^2 - {1\over 2}\|f'(\x_t)\|^2 - {1\over 2}\|f'(\x_{\dd(t)})\|^2 \right]
+ \numberthis \label{eq:asgd_proof_2}
+%\E[\langle f'(\x_t),  f'(\x_t)\rangle] + \E[\langle f'(\x_t), f'(\x_{\dd(t)}) - f'(\x_t)\rangle]
+%\\ = &
+%\E [\|f'(\x_t)\|^2] + \E [\|f'(\x_t)]
+\end{align*}
+The last equality uses an important property
+\begin{align*}
+\langle \a, \b \rangle = {1\over 2}\|\a-\b\|^2 - {1\over 2}\|\a\|^2 - {1\over 2}\|\b\|^2 
+\end{align*}
+which can be verified by straightforward linear algebra computation. Next we take expectation on both sides of \eqref{eq:asgd_proof_0} and plug \eqref{eq:asgd_proof_1} and \eqref{eq:asgd_proof_2} into that:
+\begin{align*}
+&\E[f(\x_{t+1})] - \E[f(\x_t)]  
+\\ \leq &
+-{\gamma \over 2} \E[\|f'(\x_t)\|^2] - {\gamma \over 2} \E[\|f'(\x_{\dd(t)})\|^2] + {\gamma \over 2} \E[\|f'(\x_t) - f'(\x_{\dd(t)})\|^2]
+\\ & 
++ {\gamma^2 L \sigma^2 \over 2} + {\gamma^2L \over 2} \E[\|f'(\x_{\dd(t)})\|^2]
+\\ \leq &
+-{\gamma \over 2} \E[\|f'(\x_t)\|^2] + {\gamma^2 L \sigma^2 \over 2} - {\gamma \over 2}\left(1- {\gamma L}\right) \E[\|f'(\x_{\dd(t)})\|^2]
+\\ & + {\gamma \over 2}\E[\|f'(\x_t) - f'(\x_{\dd(t)})\|^2]
+\\ \leq &
+-{\gamma \over 2} \E[\|f'(\x_t)\|^2] + {\gamma^2 L \sigma^2 \over 2} + {\gamma \over 2}\E[\|f'(\x_t) - f'(\x_{\dd(t)})\|^2]
+\numberthis \label{eq:asgd_proof_3}
+\end{align*}
+where the last inequality is obtained by choosing a sufficiently small learning rate $\gamma$ satisfying 
+\[
+1 \geq \gamma L.
+\]
+
+We have seen the first two terms on the right hand side of \eqref{eq:asgd_proof_3} (if ignoring the constant parts) in the proof to $\SGD$. %The third term of \eqref{eq:asgd_proof_3} will be equal to $\E\|f'(\x_{t})\|^2$ (ignoring the constant part) if the staleness is zero, that is, $\tau_t = 0$. 
+We can roughly treat this term as $\E\|f'(\x_{t})\|^2$ plus some perturbation depending on the staleness $\tau$. The major term we need to treat very seriously is the last term $\E[\|f'(\x_t) - f'(\x_{\dd(t)})\|^2]$, whose upper bound is given by the following lemma. It basically shows that this item is bounded by a higher order of $\gamma$: $O(\gamma^3)$.
+\begin{tcolorbox}[colback=yellow!5!white,colframe=black!75!black]
+\begin{lemma}\label{lem:asgd_1}
+Under Assumptions~\ref{ass:gd}, \ref{ass:sgd}, and \ref{ass:asgd}, we have
+\begin{align*}
+\E[\|f'(\x_t) - f'(\x_{\dd(t)})\|^2] \leq & 2\gamma^2L^2 \tau \sigma^2 
+\\ &
++  2\gamma^2L^2 \tau \sum_{s=\dd(t)}^{t-1} \E\left[ \left\| f'_s(\x_{\dd(t)}) \right\|^2 \right]
+\end{align*}
+\end{lemma} 
+\end{tcolorbox}
+\begin{proof}
+\begin{align*}
+ & \E[\|f'(\x_t) - f'(\x_{\dd(t)})\|^2]
+\\ \leq &
+L^2 \E[\|\x_t - \x_{t_{\tau_t}}\|^2]
+\\ = &
+\gamma^2L^2 \E\left[\left\|\sum_{s=\dd(t)}^{t-1} g_s(\x_{\dd(s)})\right\|^2\right].
+\\ = & 
+\gamma^2L^2 \E\left[\left\|\sum_{s=\dd(t)}^{t-1} g_s(\x_{\dd(s)}) - \sum_{s=\dd(t)}^{t-1} f'_s(\x_{\dd(s)}) + \sum_{s=\dd(t)}^{t-1} f'_s(\x_{\dd(s)}) \right\|^2\right]
+\\ \leq &
+2 \gamma^2 L^2 \E\left[\left\|\sum_{s=\dd(t)}^{t-1} \underbrace{\left(g_s(\x_{\dd(s)}) -  f'_s(\x_{\dd(s)}) \right)}_{=:\xi_{s-\dd(t)}}\right\|^2\right]
+\\ & + 
+2\gamma^2 L^2 \E\left[\left\|\sum_{s=\dd(t)}^{t-1} f'_s(\x_{\dd(s)})\right\|^2\right],
+\numberthis \label{eq:asgd_proof_4}
+\end{align*} 
+where the last inequality uses a variant of triangle inequality $\|\a+\b\|^2 \leq 2\|\a\|^2 + 2\|\b\|^2$.
+Note that the sequence of $\{\xi_0, \xi_1, \cdots, \xi_{\tau_t-\dd(t)-1}\}$ 
+%\[
+%\{g_s(\x_{\dd(s)}), g_{s+1}(\x_{s+1-\tau_{s+1}}),\cdots, g_{t-1}(\x_{t-1-\tau_{t-1}})\}
+%\]
+is a martingale sequence with 
+\[
+\xi_{l} := g_{s+l}(\x_{\dd(s+l)}) -  f'_{s+l}(\x_{\dd(s+l)}).
+\]
+A martingale sequence satisfies that
+\begin{align*}
+\E(\xi_{l+1}~|~\xi_0, \xi_1, \cdots, \xi_l) = 0.
+\end{align*} 
+Therefore, it is easy to verify that
+\begin{align*}
+\E\left[\left\|\sum_{l=0}^{t-1-\dd(t)} \xi_l \right\|^2 \right] = & \E\left[\left\|\sum_{l=0}^{t-2-\dd(t)} \xi_l \right\|^2 \right] + \E\left[\left\|\xi_{t-1} \right\|^2\right] = \sum_{l=0}^{t-1-\dd(t)} \E\left[ \|\xi_l\|^2 \right].
+\end{align*}
+In other words, we have
+\[
+\E\left[\left\|\sum_{s=\dd(t)}^{t-1} \left(g_s(\x_{\dd(s)}) -  f'_s(\x_{\dd(s)}) \right) \right\|^2\right] = \sum_{l=0}^{t-1-\dd(t)} \E\left[ \|\xi_l\|^2 \right] \leq \tau \sigma^2.
+\]
+
+Applying this property to \eqref{eq:asgd_proof_4} yields
+\begin{align*}
+ & \E[\|f'(\x_t) - f'(\x_{\dd(t)})\|^2] 
+ \\ \leq & 
+ 2\gamma^2L^2 \tau \sigma^2 + 2\gamma^2 L^2 \E\left[\left\|\sum_{s=\dd(t)}^{t-1} f'_s(\x_{\dd(s)})\right\|^2\right]
+ \\ \leq &
+ 2\gamma^2L^2 \tau \sigma^2 +  2\gamma^2L^2 \tau \sum_{s=\dd(t)}^{t-1} \E\left[ \left\| f'_s(\x_{\dd(s)}) \right\|^2 \right]
+\end{align*}
+where the last inequality uses Assumption~\ref{ass:asgd} the following property: for any vectors $\a_1, \a_2, \cdots, \a_n$, we have
+\[
+\left\|\sum_{i=1}^n \a_i\right\|^2 \leq n \sum_{i=1}^n\|\a_i\|^2.
+\]
+It completes the proof.
+\end{proof}
+We choose the learning rate sufficiently small. In particular, let $\gamma L \tau \leq 1/2$.
+Using the following short notations
+\begin{align*}
+a_t := & \E[\|f'(\x_t)\|^2]
+\\
+b_t := & \E[f(\x_t)],
+\end{align*}
+apply Lemma~\ref{lem:asgd_1} to \eqref{eq:asgd_proof_3}:
+\begin{align}
+\nonumber
+b_{t+1} - b_t \leq & -{\gamma \over 2} a_t + {\gamma^2 L \over 2}\left(1+2\gamma L \tau\right)\sigma^2 + {\gamma^3L^2\tau} \sum_{s=\dd(t)}^{t-1} a_s
+\\ \nonumber
+\leq & -{\gamma \over 2} a_t + {\gamma^2 L \over 2}\left(1+2\gamma L \tau\right)\sigma^2 + {\gamma^3L^2\tau} \sum_{s=\dd(t)}^{t-1} a_s
+\\
+\leq & 
+-{\gamma \over 2} a_t + {\gamma^2 L}\sigma^2 + {\gamma \over 4\tau} \sum_{s=\dd(t)}^{t-1} a_s.
+\label{eq:asgd_proof_5}
+\end{align}
+Next we take sum of \eqref{eq:asgd_proof_5} over $t$ from $t=1$ to $t=T$
+\begin{align*}
+b_{T+1} - b_1 \leq & -{\gamma \over 2} \sum_{t=1}^Ta_t + \gamma^2 LT \sigma^2 + {\gamma \over 4\tau} \sum_{t=1}^T \sum_{s=\dd(t)}^{t-1}a_s
+\\ \leq &
+-{\gamma \over 2} \sum_{t=1}^Ta_t + \gamma^2 LT \sigma^2 + {\gamma \over 4} \sum_{t=1}^{T} a_t
+\\ = &
+- {\gamma \over 4} \sum_{t=1}^T a_t + \gamma^2 LT\sigma^2.
+\end{align*}
+Therefore, we have the following convergence rate
+\begin{align*}
+{1\over T}\sum_{t=1}^T a_t \leq {4(b_1 - b_{T+1}) \over \gamma T} + {4\gamma L\sigma^2}.
+\end{align*}
+%We choose the learning rate $\gamma$ satisfying 
+%\[
+%1 \geq \gamma L
+%\]
+%and obtain a simpler form
+
+
+
+
+
+
+
+
+
+
+
